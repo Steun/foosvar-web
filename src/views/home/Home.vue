@@ -3,55 +3,71 @@
     <section class="player-name-box player-one">
       <label>
         Player 1
-        <input type="text" v-model="playerOneName">
+        <input type="text" min="1" max="35" v-model="playerOneName" />
       </label>
     </section>
     <section class="player-name-box player-two">
       <label>
         Player 2
-        <input type="text" v-model="playerTwoName">
+        <input type="text" min="1" max="35" v-model="playerTwoName" @keyup.enter="startGame" />
       </label>
     </section>
     <footer>
-      <router-link :to="{
-        name: 'play',
-        params: { 
-          p1: playerOneName, 
-          p2: playerTwoName
-          }
-        }" class="play-button">
+      <button class="play-button" @click="startGame" :disabled="!validForm">
         <span>play</span>
-        <img class="play-arrow" src="./../../assets/arrow-yellow.svg" alt="play">
-      </router-link>
+        <img
+          class="play-arrow"
+          src="./../../assets/arrow-yellow.svg"
+          alt="play"
+        />
+      </button>
     </footer>
   </div>
 </template>
 
 <script>
-
 export default {
   name: "home",
   data: () => {
     return {
-      playerOneName: '',
-      playerTwoName: '',
+      playerOneName: "",
+      playerTwoName: ""
+    };
+  },
+  methods: {
+    startGame() {
+      if (this.validForm) {
+        this.$router.push({
+          name: "play",
+          params: {
+            p1: this.playerOneName,
+            p2: this.playerTwoName
+          }
+        });
+      }
+    }
+  },
+  computed: {
+    validForm() {
+      return (this.playerOneName.length > 0 && this.playerTwoName.length > 0)
     }
   }
 };
 </script>
 <style lang="scss">
-@import './../../assets/styles/global.scss';
+@import "./../../assets/styles/global.scss";
 
 $line-size: 3px;
 
-header, footer {
+header,
+footer {
   margin: 0;
   padding: 0;
 }
 
 .home {
   height: 100%;
-  background: $secondary-color url('./../../assets/foosvar_bg_home.svg');
+  background: $secondary-color url("./../../assets/foosvar_bg_home.svg");
   background-size: cover;
   background-position: center center;
   display: grid;
@@ -72,7 +88,7 @@ header, footer {
       }
     }
   }
-  
+
   .player-two {
     grid-row: 2;
     grid-column: 3;
@@ -118,27 +134,36 @@ header, footer {
       align-items: center;
       justify-content: space-between;
       text-decoration: none;
+      background: transparent;
       font-size: 1.7em;
+      cursor: pointer;
+      font-family: $font-family;
       color: $secondary-color;
       border: $border-size solid $secondary-color;
       padding: 16px;
       width: 100%;
 
+      &[disabled] {
+        cursor: not-allowed;
+        
+      }
+
       span {
         display: block;
+        transition: margin ease 0.05s;
       }
 
       .play-arrow {
         align-self: center;
         top: calc(50% - #{$border-size * 2});
-        right: 16px + $border-size;
+        right: 32px + $border-size;
         width: 64px;
         position: absolute;
-        transition: right ease .25s;
+        transition: right ease 0.15s;
       }
 
       &::before {
-        content: '';
+        content: "";
         pointer-events: none;
         top: 0;
         left: 0;
@@ -148,8 +173,12 @@ header, footer {
         border: $border-size solid $primary-color;
       }
 
-      &:hover, &:active, &:focus {
+      &:not([disabled]) {
         outline: none;
+
+        span {
+          margin-left: 4px;
+        }
 
         .play-arrow {
           right: 10px + $border-size;

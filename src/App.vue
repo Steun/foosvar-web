@@ -1,17 +1,20 @@
 <template>
   <div id="app">
-    <router-view />
+    <transition name="slide" mode="out-in">
+      <router-view />
+    </transition>
   </div>
 </template>
 
 <style lang="scss">
-@import './assets/styles/global.scss';
+@import "./assets/styles/global.scss";
 
 * {
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   width: 100%;
   margin: 0;
@@ -29,12 +32,19 @@ html, body {
   overflow-y: auto;
 }
 
-#nav {
-  padding: 30px;
+.slide-enter-active,
+.slide-leave-active {
+  transition-property: all;
+  transition-duration: 0.25s;
+}
 
-  a {
-    font-weight: bold;
-    color: $primary-color;
-  }
+.slide-enter-active {
+  transition-delay: 0.25s;
+}
+
+.slide-enter,
+.slide-leave-active {
+  transform: translate(-100vw);
+  position: fixed;
 }
 </style>
